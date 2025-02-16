@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appointment Calendar</title>
+    <style>
+      h2 {
+        background-color: #483b71;
+        padding: 10px;
+        margin: 0;
+        color: white;
+      }
+      body {
+        font-family: Georgia, "Times New Roman", Times, serif;
+        text-align: center;
+        background-color: #ffffff;
+      }
+      header {
+        background: #483b71;
+        color: white;
+        padding: 20px;
+        font-size: 28px;
+      }
+      .calendar {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        font-weight: bold;
+        background: #483b71;
+        padding: 10px 0;
+        color: white;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+      }
+      .day {
+        padding: 10px;
+        border: 1px solid #483b71;
+        min-height: 60px;
+        position: relative;
+      }
+      .appointment {
+        background: #b49aef;
+        color: white;
+        font-size: 12px;
+        padding: 5px;
+        margin-top: 5px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .cancel-btn {
+        cursor: pointer;
+        color: red;
+        font-weight: bold;
+        margin-left: 5px;
+      }
+      button {
+        padding: 5px 10px;
+        margin: 10px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Appointment Calendar</h2>
+    <div class="calendar">
+      <div class="header">
+        <button onclick="prevMonth()">&#9665;</button>
+        <h2 id="monthYear"></h2>
+        <button onclick="nextMonth()">&#9655;</button>
+      </div>
+      <div class="days">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+      </div>
+      <div class="grid" id="calendarGrid"></div>
+    </div>
+
+    <script>
+      let currentMonth =
+        parseInt(localStorage.getItem("currentMonth")) || new Date().getMonth();
+      let currentYear =
+        parseInt(localStorage.getItem("currentYear")) ||
+        new Date().getFullYear();
+
+      function loadCalendar() {
+        const calendarGrid = document.getElementById("calendarGrid");
+        calendarGrid.innerHTML = "";
+        document.getElementById("monthYear").innerText = new Date(
+          currentYear,
+          currentMonth
+        ).toLocaleString("default", { month: "long", year: "numeric" });
+
+        localStorage.setItem("currentMonth", currentMonth);
+        localStorage.setItem("currentYear", currentYear);
+
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+          const emptyCell = document.createElement("div");
+          calendarGrid.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= totalDays; day++) {
+          const dayCell = document.createElement("div");
+          dayCell.classList.add("day");
+          dayCell.innerHTML = `<strong>${day}</strong>`;
+
+          const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(
+            2,
+            "0"
+          )}-${String(day).padStart(2, "0")}`;
+
+          let appointments =
+            JSON.parse(localStorage.getItem("appointments")) || [];
+          appointments
+            .filter((app) => app.date === dateKey)
+            .forEach((app, index) => {
+              const appDiv = document.createElement("div");
+              appDiv.classList.add("appointment");
+              appDiv.innerHTML = `
+                ${app.time} - Dr. ${app.doctor} 
+                <span class="cancel-btn" onclick="cancelAppointment('${dateKey}', ${index})">❌</span>
+              `;
+              dayCell.appendChild(appDiv);
+            });
+
+          calendarGrid.appendChild(dayCell);
+        }
+      }
+
+      function cancelAppointment(date, index) {
+        let appointments =
+          JSON.parse(localStorage.getItem("appointments")) || [];
+        let filteredAppointments = appointments.filter(
+          (app) => app.date !== date
+        );
+        let dayAppointments = appointments.filter((app) => app.date === date);
+        dayAppointments.splice(index, 1);
+        localStorage.setItem(
+          "appointments",
+          JSON.stringify([...filteredAppointments, ...dayAppointments])
+        );
+        loadCalendar();
+      }
+
+      function prevMonth() {
+        if (currentMonth === 0) {
+          currentMonth = 11;
+          currentYear--;
+        } else {
+          currentMonth--;
+        }
+        loadCalendar();
+      }
+
+      function nextMonth() {
+        if (currentMonth === 11) {
+          currentMonth = 0;
+          currentYear++;
+        } else {
+          currentMonth++;
+        }
+        loadCalendar();
+      }
+
+      window.onload = loadCalendar;
+    </script>
+
+    <button onclick="window.location.href='index.html'">Back to Home</button>
+    <button onclick="window.location.href='appointment.html'">
+      Back to Scheduling
+    </button>
+  </body>
+</html>

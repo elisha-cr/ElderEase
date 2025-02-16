@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medication Reminders</title>
+    <style>
+      body {
+        font-family: Arial, "Arial", Arial, Arial;
+        text-align: center;
+        background-color: #f4f4f4;
+      }
+      header {
+        background: #483b71;
+        color: white;
+        padding: 20px;
+        font-size: 28px;
+      }
+      .container {
+        padding: 20px;
+      }
+      .week-nav {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      .arrow {
+        font-size: 24px;
+        cursor: pointer;
+        margin: 0 20px;
+        color: #483b71;
+      }
+      .arrow:hover {
+        color: #7c6baa;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+      }
+      th {
+        background-color: #483b71;
+        color: white;
+      }
+      .medication-cell {
+        cursor: pointer;
+      }
+      .medication-cell p {
+        margin: 5px;
+      }
+      .delete-btn {
+        color: red;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .add-med {
+        background-color: #483b71;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .add-med:hover {
+        background-color: #7c6baa;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Medication Reminders</header>
+    <div class="container">
+      </div>
+      <h3>Weekly Medicine</h3>
+      <input type="text" id="medName" placeholder="Enter medicine name" />
+      <input type="text" id="medDesc" placeholder="Enter description" />
+      <select id="daySelect">
+        <option value="sat">Sunday</option>
+        <option value="sun">Monday</option>
+        <option value="mon">Tuesday</option>
+        <option value="tue">Wednesday</option>
+        <option value="wed">Thursday</option>
+        <option value="thu">Friday</option>
+        <option value="fri">Saturday</option>
+      </select>
+      <select id="timeSelect">
+        <option value="00">00:00</option>
+        <option value="01">01:00</option>
+        <option value="02">02:00</option>
+        <option value="03">03:00</option>
+        <option value="04">04:00</option>
+        <option value="05">05:00</option>
+        <option value="06">06:00</option>
+        <option value="07">07:00</option>
+        <option value="08">08:00</option>
+        <option value="09">09:00</option>
+        <option value="10">10:00</option>
+        <option value="11">11:00</option>
+        <option value="12">12:00</option>
+        <option value="13">13:00</option>
+        <option value="14">14:00</option>
+        <option value="15">15:00</option>
+        <option value="16">16:00</option>
+        <option value="17">17:00</option>
+        <option value="18">18:00</option>
+        <option value="19">19:00</option>
+        <option value="20">20:00</option>
+        <option value="21">21:00</option>
+        <option value="22">22:00</option>
+        <option value="23">23:00</option>
+      </select>
+      <button class="add-med" onclick="addMedication()">Add</button>
+      <table>
+        <tr>
+          <th>Time</th>
+          <th>Sunday</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+        </tr>
+        <!-- 00:00 to 23:00 rows -->
+        <tr>
+          <td class="hour">00:00</td>
+          <td id="sat-00" class="medication-cell"></td>
+          <td id="sun-00" class="medication-cell"></td>
+          <td id="mon-00" class="medication-cell"></td>
+          <td id="tue-00" class="medication-cell"></td>
+          <td id="wed-00" class="medication-cell"></td>
+          <td id="thu-00" class="medication-cell"></td>
+          <td id="fri-00" class="medication-cell"></td>
+        </tr>
+        <!-- 01:00 -->
+        <tr>
+          <td class="hour">01:00</td>
+          <td id="sat-01" class="medication-cell"></td>
+          <td id="sun-01" class="medication-cell"></td>
+          <td id="mon-01" class="medication-cell"></td>
+          <td id="tue-01" class="medication-cell"></td>
+          <td id="wed-01" class="medication-cell"></td>
+          <td id="thu-01" class="medication-cell"></td>
+          <td id="fri-01" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">02:00</td>
+          <td id="sat-02" class="medication-cell"></td>
+          <td id="sun-02" class="medication-cell"></td>
+          <td id="mon-02" class="medication-cell"></td>
+          <td id="tue-02" class="medication-cell"></td>
+          <td id="wed-02" class="medication-cell"></td>
+          <td id="thu-02" class="medication-cell"></td>
+          <td id="fri-02" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">03:00</td>
+          <td id="sat-03" class="medication-cell"></td>
+          <td id="sun-03" class="medication-cell"></td>
+          <td id="mon-03" class="medication-cell"></td>
+          <td id="tue-03" class="medication-cell"></td>
+          <td id="wed-03" class="medication-cell"></td>
+          <td id="thu-03" class="medication-cell"></td>
+          <td id="fri-03" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">04:00</td>
+          <td id="sat-04" class="medication-cell"></td>
+          <td id="sun-04" class="medication-cell"></td>
+          <td id="mon-04" class="medication-cell"></td>
+          <td id="tue-04" class="medication-cell"></td>
+          <td id="wed-04" class="medication-cell"></td>
+          <td id="thu-04" class="medication-cell"></td>
+          <td id="fri-04" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">05:00</td>
+          <td id="sat-05" class="medication-cell"></td>
+          <td id="sun-05" class="medication-cell"></td>
+          <td id="mon-05" class="medication-cell"></td>
+          <td id="tue-05" class="medication-cell"></td>
+          <td id="wed-05" class="medication-cell"></td>
+          <td id="thu-05" class="medication-cell"></td>
+          <td id="fri-05" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">06:00</td>
+          <td id="sat-06" class="medication-cell"></td>
+          <td id="sun-06" class="medication-cell"></td>
+          <td id="mon-06" class="medication-cell"></td>
+          <td id="tue-06" class="medication-cell"></td>
+          <td id="wed-06" class="medication-cell"></td>
+          <td id="thu-06" class="medication-cell"></td>
+          <td id="fri-06" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">07:00</td>
+          <td id="sat-07" class="medication-cell"></td>
+          <td id="sun-07" class="medication-cell"></td>
+          <td id="mon-07" class="medication-cell"></td>
+          <td id="tue-07" class="medication-cell"></td>
+          <td id="wed-07" class="medication-cell"></td>
+          <td id="thu-07" class="medication-cell"></td>
+          <td id="fri-07" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">08:00</td>
+          <td id="sat-08" class="medication-cell"></td>
+          <td id="sun-08" class="medication-cell"></td>
+          <td id="mon-08" class="medication-cell"></td>
+          <td id="tue-08" class="medication-cell"></td>
+          <td id="wed-08" class="medication-cell"></td>
+          <td id="thu-08" class="medication-cell"></td>
+          <td id="fri-08" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">09:00</td>
+          <td id="sat-09" class="medication-cell"></td>
+          <td id="sun-09" class="medication-cell"></td>
+          <td id="mon-09" class="medication-cell"></td>
+          <td id="tue-09" class="medication-cell"></td>
+          <td id="wed-09" class="medication-cell"></td>
+          <td id="thu-09" class="medication-cell"></td>
+          <td id="fri-09" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">10:00</td>
+          <td id="sat-10" class="medication-cell"></td>
+          <td id="sun-10" class="medication-cell"></td>
+          <td id="mon-10" class="medication-cell"></td>
+          <td id="tue-10" class="medication-cell"></td>
+          <td id="wed-10" class="medication-cell"></td>
+          <td id="thu-10" class="medication-cell"></td>
+          <td id="fri-10" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">11:00</td>
+          <td id="sat-11" class="medication-cell"></td>
+          <td id="sun-11" class="medication-cell"></td>
+          <td id="mon-11" class="medication-cell"></td>
+          <td id="tue-11" class="medication-cell"></td>
+          <td id="wed-11" class="medication-cell"></td>
+          <td id="thu-11" class="medication-cell"></td>
+          <td id="fri-11" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">12:00</td>
+          <td id="sat-12" class="medication-cell"></td>
+          <td id="sun-12" class="medication-cell"></td>
+          <td id="mon-12" class="medication-cell"></td>
+          <td id="tue-12" class="medication-cell"></td>
+          <td id="wed-12" class="medication-cell"></td>
+          <td id="thu-12" class="medication-cell"></td>
+          <td id="fri-12" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">13:00</td>
+          <td id="sat-13" class="medication-cell"></td>
+          <td id="sun-13" class="medication-cell"></td>
+          <td id="mon-13" class="medication-cell"></td>
+          <td id="tue-13" class="medication-cell"></td>
+          <td id="wed-13" class="medication-cell"></td>
+          <td id="thu-13" class="medication-cell"></td>
+          <td id="fri-13" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">14:00</td>
+          <td id="sat-14" class="medication-cell"></td>
+          <td id="sun-14" class="medication-cell"></td>
+          <td id="mon-14" class="medication-cell"></td>
+          <td id="tue-14" class="medication-cell"></td>
+          <td id="wed-14" class="medication-cell"></td>
+          <td id="thu-14" class="medication-cell"></td>
+          <td id="fri-14" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">15:00</td>
+          <td id="sat-15" class="medication-cell"></td>
+          <td id="sun-15" class="medication-cell"></td>
+          <td id="mon-15" class="medication-cell"></td>
+          <td id="tue-15" class="medication-cell"></td>
+          <td id="wed-15" class="medication-cell"></td>
+          <td id="thu-15" class="medication-cell"></td>
+          <td id="fri-15" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">16:00</td>
+          <td id="sat-16" class="medication-cell"></td>
+          <td id="sun-16" class="medication-cell"></td>
+          <td id="mon-16" class="medication-cell"></td>
+          <td id="tue-16" class="medication-cell"></td>
+          <td id="wed-16" class="medication-cell"></td>
+          <td id="thu-16" class="medication-cell"></td>
+          <td id="fri-16" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">17:00</td>
+          <td id="sat-17" class="medication-cell"></td>
+          <td id="sun-17" class="medication-cell"></td>
+          <td id="mon-17" class="medication-cell"></td>
+          <td id="tue-17" class="medication-cell"></td>
+          <td id="wed-17" class="medication-cell"></td>
+          <td id="thu-17" class="medication-cell"></td>
+          <td id="fri-17" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">18:00</td>
+          <td id="sat-18" class="medication-cell"></td>
+          <td id="sun-18" class="medication-cell"></td>
+          <td id="mon-18" class="medication-cell"></td>
+          <td id="tue-18" class="medication-cell"></td>
+          <td id="wed-18" class="medication-cell"></td>
+          <td id="thu-18" class="medication-cell"></td>
+          <td id="fri-18" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">19:00</td>
+          <td id="sat-19" class="medication-cell"></td>
+          <td id="sun-19" class="medication-cell"></td>
+          <td id="mon-19" class="medication-cell"></td>
+          <td id="tue-19" class="medication-cell"></td>
+          <td id="wed-19" class="medication-cell"></td>
+          <td id="thu-19" class="medication-cell"></td>
+          <td id="fri-19" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">20:00</td>
+          <td id="sat-20" class="medication-cell"></td>
+          <td id="sun-20" class="medication-cell"></td>
+          <td id="mon-20" class="medication-cell"></td>
+          <td id="tue-20" class="medication-cell"></td>
+          <td id="wed-20" class="medication-cell"></td>
+          <td id="thu-20" class="medication-cell"></td>
+          <td id="fri-20" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">21:00</td>
+          <td id="sat-21" class="medication-cell"></td>
+          <td id="sun-21" class="medication-cell"></td>
+          <td id="mon-21" class="medication-cell"></td>
+          <td id="tue-21" class="medication-cell"></td>
+          <td id="wed-21" class="medication-cell"></td>
+          <td id="thu-21" class="medication-cell"></td>
+          <td id="fri-21" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">22:00</td>
+          <td id="sat-22" class="medication-cell"></td>
+          <td id="sun-22" class="medication-cell"></td>
+          <td id="mon-22" class="medication-cell"></td>
+          <td id="tue-22" class="medication-cell"></td>
+          <td id="wed-22" class="medication-cell"></td>
+          <td id="thu-22" class="medication-cell"></td>
+          <td id="fri-22" class="medication-cell"></td>
+        </tr>
+        <tr>
+          <td class="hour">23:00</td>
+          <td id="sat-23" class="medication-cell"></td>
+          <td id="sun-23" class="medication-cell"></td>
+          <td id="mon-23" class="medication-cell"></td>
+          <td id="tue-23" class="medication-cell"></td>
+          <td id="wed-23" class="medication-cell"></td>
+          <td id="thu-23" class="medication-cell"></td>
+          <td id="fri-23" class="medication-cell"></td>
+        </tr>
+      </table>
+    </div>
+    <script>
+      let currentWeek = 1;
+      function changeWeek(direction) {
+        currentWeek += direction;
+        if (currentWeek < 1) currentWeek = 1;
+        document.getElementById("weekLabel").innerText = `Week ${currentWeek}`;
+      }
+      function addMedication() {
+        let medName = document.getElementById("medName").value;
+        let medDesc = document.getElementById("medDesc").value;
+        let day = document.getElementById("daySelect").value;
+        let time = document.getElementById("timeSelect").value;
+        if (!medName || !medDesc) return alert("Enter medicine details");
+        let cell = document.getElementById(`${day}-${time}`);
+        let medDetails = document.createElement("p");
+        medDetails.innerHTML = `${medName} - ${medDesc} <span class='delete-btn' onclick='removeMedication(this)'>X</span>`;
+        cell.appendChild(medDetails);
+        saveMedications();
+        document.getElementById("medName").value = "";
+        document.getElementById("medDesc").value = "";
+      }
+      function removeMedication(element) {
+        element.parentElement.remove();
+        saveMedications();
+      }
+      function saveMedications() {
+        let meds = {};
+        document.querySelectorAll(".medication-cell").forEach((cell) => {
+          let id = cell.id;
+          let medsList = [];
+          cell.querySelectorAll("p").forEach((p) => {
+            medsList.push(p.innerText.replace(" X", ""));
+          });
+          if (medsList.length) meds[id] = medsList;
+        });
+        localStorage.setItem("medications", JSON.stringify(meds));
+      }
+      function loadMedications() {
+        let meds = JSON.parse(localStorage.getItem("medications")) || {};
+        Object.keys(meds).forEach((id) => {
+          let cell = document.getElementById(id);
+          meds[id].forEach((med) => {
+            let medDetails = document.createElement("p");
+            medDetails.innerHTML = `${med} <span class='delete-btn' onclick='removeMedication(this)'>X</span>`;
+            cell.appendChild(medDetails);
+          });
+        });
+      }
+      loadMedications();
+    </script>
+    <!-- Home Button -->
+    <button class="add-med" onclick="window.location.href='index.html'">
+      Back to Home
+    </button>
+  </body>
+</html>
+
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+</head>
+    </script>
+  </body>
+</html>

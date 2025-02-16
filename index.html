@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ElderEase</title>
+    <style>
+      /* Basic styles for the body */
+      body {
+        font-family: Georgia, "Times New Roman", Times, serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background: url("https://static.vecteezy.com/system/resources/thumbnails/017/023/139/small_2x/blue-abstract-background-blue-background-design-abstract-futuristic-background-blue-modern-background-blue-abstract-background-for-templates-cards-and-websites-free-vector.jpg")
+          no-repeat center center fixed; /* Background image */
+        background-size: cover;
+        color: white;
+      }
+
+      /* Header styles */
+      header {
+        background: rgba(0, 17, 103, 0.747); /* Semi-transparent background */
+        color: white;
+        padding: 20px;
+        font-size: 36px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+      }
+
+      /* Logo/title on the left */
+      .logo {
+        margin-left: 20px;
+        font-weight: bold;
+      }
+
+      /* Navigation bar (Login/Signup/Profile buttons) */
+      .nav {
+        margin-right: 20px;
+      }
+
+      .nav .btn {
+        background-color: #272c73;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 10px;
+      }
+
+      .nav .btn:hover {
+        background-color: hsl(0, 68%, 23%);
+      }
+
+      /* Container styles */
+      .container {
+        padding: 20px;
+        backdrop-filter: blur(10px); /* Blurred background effect */
+        background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+        border-radius: 12px;
+        max-width: 1100px;
+        margin: 50px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Button styles */
+      .btn-main {
+        flex: 1;
+        max-width: 220px;
+        background-color: #031544d0; /* Soft pastel blue */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      /* Hover effect */
+      .btn-main:hover {
+        background-color: #2e3c49; /* Slightly darker blue */
+        transform: translateY(-3px); /* Slight lift on hover */
+      }
+
+      /* Button container - evenly distribute buttons */
+      .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        padding: 20px;
+        max-width: 800px;
+        margin: auto;
+      }
+
+      /* Footer styling */
+      footer {
+        background: rgba(0, 17, 103, 0.747);
+        color: white;
+        padding: 20px;
+        margin-top: 50px;
+      }
+
+      footer p {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header for ElderEase -->
+    <header>
+      <div class="logo">ElderEase</div>
+      <div class="nav">
+        <button class="btn" onclick="window.location.href='login.html'">
+          Login
+        </button>
+        <button class="btn" onclick="window.location.href='signup.html'">
+          Sign Up
+        </button>
+        <button class="btn" onclick="window.location.href='profile.html'">
+          Profile
+        </button>
+      </div>
+    </header>
+
+    <!-- Main container for buttons -->
+    <div class="container">
+      <div class="button-container">
+        <button
+          class="btn-main"
+          onclick="window.location.href='medication.html'"
+        >
+          Medication Reminders
+        </button>
+        <button class="btn-main" onclick="window.location.href='social.html'">
+          Connect Socially
+        </button>
+        <button class="btn-main" onclick="window.location.href='health.html'">
+          Health Tracking
+        </button>
+        <button
+          class="btn-main"
+          onclick="window.location.href='appointment.html'"
+        >
+          Schedule Appointments
+        </button>
+        <button
+          class="btn-main"
+          onclick="window.location.href='emergency.html'"
+        >
+          Emergency Contacts 🚨
+        </button>
+      </div>
+
+      <!-- Voice Assistant Button -->
+      <button class="btn-voice" onclick="startVoiceAssistant()">
+        🎙️ Voice Assistant
+      </button>
+
+      <!-- Response Box -->
+      <div id="response"></div>
+    </div>
+
+    <footer>
+      <p>Made with ❤️ for ElderEase | © 2025</p>
+    </footer>
+
+    <script>
+      function startVoiceAssistant() {
+        const recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.lang = "en-US";
+        recognition.start();
+
+        recognition.onresult = function (event) {
+          const voiceInput = event.results[0][0].transcript.toLowerCase();
+          document.getElementById("response").innerText =
+            "You said: " + voiceInput;
+
+          // Handling commands
+          if (voiceInput.includes("call 911")) {
+            window.location.href = "tel:911";
+          } else if (voiceInput.includes("call doctor")) {
+            window.location.href = "tel:+1234567890"; // Replace with doctor's number
+          } else if (voiceInput.includes("schedule appointment")) {
+            window.location.href = "appointment.html";
+          } else if (voiceInput.includes("open emergency contacts")) {
+            window.location.href = "emergency.html";
+          } else if (voiceInput.includes("set medication reminder")) {
+            window.location.href = "medication.html";
+          } else {
+            speak("Sorry, I didn't understand that.");
+          }
+        };
+
+        recognition.onerror = function (event) {
+          document.getElementById("response").innerText =
+            "Error: " + event.error;
+        };
+      }
+
+      function speak(message) {
+        const speech = new SpeechSynthesisUtterance(message);
+        speech.lang = "en-US";
+        window.speechSynthesis.speak(speech);
+      }
+    </script>
+  </body>
+</html>

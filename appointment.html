@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule Appointment</title>
+    <style>
+      /* Add relevant styles here */
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">ElderEase</div>
+      <div class="nav">
+        <button class="btn" onclick="window.location.href='index.html'">
+          Back to Home
+        </button>
+      </div>
+    </header>
+
+    <div class="container">
+      <h2>Schedule Doctor Appointment</h2>
+      <form id="appointmentDetails">
+        <label for="doctorName">Doctor's Name:</label>
+        <input
+          type="text"
+          id="doctorName"
+          placeholder="Enter Doctor's Name"
+          required
+        /><br />
+
+        <label for="appointmentDate">Date:</label>
+        <input type="date" id="appointmentDate" required /><br />
+
+        <label for="appointmentTime">Time:</label>
+        <input type="time" id="appointmentTime" required /><br />
+
+        <label for="appointmentReason">Reason for Appointment:</label>
+        <textarea
+          id="appointmentReason"
+          placeholder="Reason for appointment"
+          required
+        ></textarea
+        ><br />
+
+        <button type="submit" onclick="window.location.href='calendar.html'">
+          Confirm Appointment
+        </button>
+        <button type="cal" onclick="window.location.href='calendar.html'">
+          View Calendar
+        </button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("appointmentDetails")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent page reload
+
+          const doctorName = document.getElementById("doctorName").value;
+          const appointmentDate =
+            document.getElementById("appointmentDate").value;
+          const appointmentTime =
+            document.getElementById("appointmentTime").value;
+          const appointmentReason =
+            document.getElementById("appointmentReason").value;
+
+          // Store appointment in localStorage
+          const newAppointment = {
+            doctor: doctorName,
+            date: appointmentDate,
+            time: appointmentTime,
+            reason: appointmentReason,
+          };
+
+          let appointments =
+            JSON.parse(localStorage.getItem("appointments")) || [];
+          appointments.push(newAppointment);
+          localStorage.setItem("appointments", JSON.stringify(appointments));
+
+          alert(
+            `Appointment confirmed with Dr. ${doctorName} on ${appointmentDate} at ${appointmentTime}.`
+          );
+
+          // Redirect to calendar page
+          window.location.href = "calendar.html";
+        });
+    </script>
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yearly Appointments & Doctor Contacts</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 500px;
+        background: white;
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #483b71;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #483b71;
+        color: white;
+      }
+      .btn {
+        background-color: #483b71;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .btn:hover {
+        background-color: hsl(256, 51%, 21%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Yearly Medical Appointments</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Appointment</th>
+            <th>Last Visit</th>
+            <th>Next Due</th>
+            <th>Completed</th>
+          </tr>
+        </thead>
+        <tbody id="appointmentList"></tbody>
+      </table>
+      <button class="btn" onclick="resetChecklist()">Reset Checklist</button>
+    </div>
+
+    <div class="container">
+      <h2>Doctor Contacts</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Specialty</th>
+            <th>Contact</th>
+          </tr>
+        </thead>
+        <tbody id="doctorList"></tbody>
+      </table>
+    </div>
+
+    <script>
+      // Medical Appointments Data
+      const appointments = [
+        { name: "Family Doctor Checkup", interval: 365 },
+        { name: "Dental Cleaning", interval: 365 },
+        { name: "Eye Exam", interval: 547 }, // Every 18 months
+        { name: "Blood Test", interval: 365 },
+      ];
+
+      function loadAppointments() {
+        const storedAppointments =
+          JSON.parse(localStorage.getItem("appointments")) || [];
+        if (storedAppointments.length === 0) {
+          const today = new Date();
+          appointments.forEach((appointment) => {
+            storedAppointments.push({
+              name: appointment.name,
+              lastVisit: formatDate(today),
+              nextDue: formatDate(addDays(today, appointment.interval)),
+              completed: false,
+            });
+          });
+          localStorage.setItem(
+            "appointments",
+            JSON.stringify(storedAppointments)
+          );
+        }
+        displayAppointments(storedAppointments);
+      }
+
+      function displayAppointments(appointments) {
+        const appointmentList = document.getElementById("appointmentList");
+        appointmentList.innerHTML = "";
+        appointments.forEach((appointment, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${appointment.name}</td>
+            <td>${appointment.lastVisit}</td>
+            <td>${appointment.nextDue}</td>
+            <td><input type="checkbox" ${
+              appointment.completed ? "checked" : ""
+            } onchange="markCompleted(${index})"></td>
+          `;
+          appointmentList.appendChild(row);
+        });
+      }
+
+      function markCompleted(index) {
+        let storedAppointments = JSON.parse(
+          localStorage.getItem("appointments")
+        );
+        storedAppointments[index].completed =
+          !storedAppointments[index].completed;
+        localStorage.setItem(
+          "appointments",
+          JSON.stringify(storedAppointments)
+        );
+        displayAppointments(storedAppointments);
+      }
+
+      function resetChecklist() {
+        localStorage.removeItem("appointments");
+        loadAppointments();
+      }
+
+      function formatDate(date) {
+        return date.toISOString().split("T")[0];
+      }
+
+      function addDays(date, days) {
+        let result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+      }
+
+      // Doctor Contact Data
+      const doctors = [
+        {
+          name: "Dr. John Smith",
+          specialty: "Family Doctor",
+          phone: "+1 416-123-4567",
+        },
+        {
+          name: "Dr. Emily Brown",
+          specialty: "Dentist",
+          phone: "+1 416-234-5678",
+        },
+        {
+          name: "Dr. Michael Lee",
+          specialty: "Optometrist",
+          phone: "+1 416-345-6789",
+        },
+        {
+          name: "Dr. Sarah Davis",
+          specialty: "Cardiologist",
+          phone: "+1 416-456-7890",
+        },
+      ];
+
+      function loadDoctors() {
+        const doctorList = document.getElementById("doctorList");
+        doctorList.innerHTML = "";
+        doctors.forEach((doctor) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${doctor.name}</td>
+            <td>${doctor.specialty}</td>
+            <td><a href="tel:${doctor.phone}" style="color: blue; text-decoration: none;">${doctor.phone}</a></td>
+          `;
+          doctorList.appendChild(row);
+        });
+      }
+
+      window.onload = function () {
+        loadAppointments();
+        loadDoctors();
+      };
+    </script>
+  </body>
+</html>

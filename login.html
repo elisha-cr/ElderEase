@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - ElderEase</title>
+    <style>
+      body {
+        font-family: Arial, "Arial", Arial, Arial;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        padding: 20px;
+        margin: 50px auto;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .btn {
+        background-color: #483b71;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .btn:hover {
+        background-color: hsl(256, 51%, 21%);
+      }
+
+      .link {
+        margin-top: 15px;
+        display: block;
+        color: #483b71;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login</h2>
+      <form>
+        <input type="email" placeholder="Enter your email" required /><br />
+        <input
+          type="password"
+          placeholder="Enter your password"
+          required
+        /><br />
+        <button type="submit" class="btn">Login</button>
+      </form>
+      <a href="signup.html" class="link">Don't have an account? Sign up</a>
+    </div>
+  </body>
+</html>
+<script>
+  document.querySelector("form").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let email = document.querySelector("input[type='email']").value;
+    let password = document.querySelector("input[type='password']").value;
+
+    let storedEmail = localStorage.getItem("userEmail");
+    let storedPassword = localStorage.getItem("userPassword");
+
+    if (email === storedEmail && password === storedPassword) {
+      alert("Login successful!");
+      window.location.href = "index.html"; // Redirect to home page
+    } else {
+      alert("Invalid email or password!");
+    }
+  });
+</script>
+<script>
+  document
+    .getElementById("loginForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      let email = document.getElementById("email").value;
+      let password = document.getElementById("password").value;
+
+      let storedEmail = localStorage.getItem("userEmail");
+      let storedPassword = localStorage.getItem("userPassword");
+
+      if (email === storedEmail && password === storedPassword) {
+        alert("Login successful!");
+        window.location.href = "index.html"; // Redirect to home page // Redirect to profile page
+      } else {
+        alert("Invalid email or password!");
+      }
+    });
+</script>

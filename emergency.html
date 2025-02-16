@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emergency Contacts</title>
+    <style>
+      body {
+        font-family: Arial, "Arial", Arial, Arial;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      header {
+        background: #604f95;
+        color: white;
+        padding: 20px;
+        font-size: 28px;
+      }
+      .container {
+        max-width: 500px;
+        margin: 20px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+      .btn-emergency {
+        display: block;
+        background-color: hsl(348, 89%, 21%);
+        color: white;
+        padding: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-bottom: 20px;
+      }
+      .btn-emergency:hover {
+        background-color: darkred;
+      }
+      .contact-list {
+        list-style: none;
+        padding: 0;
+      }
+      .contact-list li {
+        background: #e7e3f5;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-size: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .contact-list a {
+        text-decoration: none;
+        color: #604f95;
+        font-weight: bold;
+      }
+      .remove-btn {
+        background: rgb(110, 0, 18);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      .remove-btn:hover {
+        background: darkred;
+      }
+      .back-btn {
+        display: block;
+        margin-top: 20px;
+        background-color: #483b71;
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        text-decoration: none;
+      }
+      .back-btn:hover {
+        background-color: hsl(256, 51%, 21%);
+      }
+      input {
+        width: 80%;
+        padding: 8px;
+        margin: 5px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background: #604f95;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #483b71;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Emergency Contacts 🚨</header>
+    <div class="container">
+      <a href="tel:911" class="btn-emergency">📞 Call 911</a>
+      <h2>Your Emergency Contacts</h2>
+      <ul class="contact-list" id="contactList"></ul>
+      <h3>Add New Contact</h3>
+      <input type="text" id="contactName" placeholder="Enter Name" />
+      <input type="tel" id="contactNumber" placeholder="Enter Phone Number" />
+      <button onclick="addContact()">Add Contact</button>
+      <a href="index.html" class="back-btn">⬅ Back to Home</a>
+    </div>
+    <script>
+      let contacts =
+        JSON.parse(localStorage.getItem("emergencyContacts")) || [];
+      function displayContacts() {
+        const contactList = document.getElementById("contactList");
+        contactList.innerHTML = "";
+        contacts.forEach((contact, index) => {
+          let li = document.createElement("li");
+          li.innerHTML = `${contact.name} <a href='tel:${contact.number}'>📞 Call</a> <button class='remove-btn' onclick='removeContact(${index})'>Remove</button>`;
+          contactList.appendChild(li);
+        });
+      }
+      function addContact() {
+        let name = document.getElementById("contactName").value;
+        let number = document.getElementById("contactNumber").value;
+        if (name && number) {
+          contacts.push({ name, number });
+          localStorage.setItem("emergencyContacts", JSON.stringify(contacts));
+          displayContacts();
+          document.getElementById("contactName").value = "";
+          document.getElementById("contactNumber").value = "";
+        } else {
+          alert("Please enter both name and phone number.");
+        }
+      }
+      function removeContact(index) {
+        contacts.splice(index, 1);
+        localStorage.setItem("emergencyContacts", JSON.stringify(contacts));
+        displayContacts();
+      }
+      window.onload = displayContacts;
+    </script>
+  </body>
+</html>

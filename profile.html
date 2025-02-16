@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - ElderEase</title>
+    <style>
+      body {
+        font-family: Arial, "Arial", Arial, Arial;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: #fffdfd;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        padding: 20px;
+        margin: 50px auto;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      .profile-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .profile-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #604f95;
+        cursor: pointer;
+      }
+
+      .upload-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: white;
+        border-radius: 50%;
+        padding: 5px;
+        cursor: pointer;
+        border: 1px solid #604f95;
+        font-size: 14px;
+      }
+
+      .info {
+        text-align: left;
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      input,
+      select {
+        width: 90%;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        display: none;
+      }
+
+      .btn {
+        background-color: #483b71;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .btn:hover {
+        background-color: hsl(256, 51%, 21%);
+      }
+      .back-home {
+        background-color: #483b71;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .back-home:hover {
+        ackground-color: hsl(256, 51%, 21%);
+      }
+      #fileInput {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Your Profile</h2>
+
+      <p class="info"><strong>Name:</strong> <span id="profileName"></span></p>
+      <input type="text" id="editName" />
+
+      <p class="info">
+        <strong>Email:</strong> <span id="profileEmail"></span>
+      </p>
+
+      <p class="info"><strong>Age:</strong> <span id="profileAge"></span></p>
+      <input type="number" id="editAge" />
+
+      <p class="info">
+        <strong>Gender:</strong> <span id="profileGender"></span>
+      </p>
+      <select id="editGender" style="display: none">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <p class="info">
+        <strong>Address:</strong> <span id="profileAddress"></span>
+      </p>
+      <input type="text" id="editAddress" />
+
+      <button class="btn" onclick="enableEdit()">Edit Profile</button>
+      <button
+        class="btn"
+        onclick="saveProfile()"
+        style="display: none"
+        id="saveBtn"
+      >
+        Save Changes
+      </button>
+      <button class="btn" onclick="logout()">Logout</button>
+      <!-- Back to Home Button -->
+      <button class="back-home" onclick="window.location.href='index.html'">
+        Back to Home
+      </button>
+    </div>
+
+    <script>
+      // Load user data from localStorage
+      function loadProfile() {
+        document.getElementById("profileName").textContent =
+          localStorage.getItem("userName") || "Not Set";
+        document.getElementById("profileEmail").textContent =
+          localStorage.getItem("userEmail") || "Not Set";
+        document.getElementById("profileAge").textContent =
+          localStorage.getItem("userAge") || "Not Set";
+        document.getElementById("profileGender").textContent =
+          localStorage.getItem("userGender") || "Not Set";
+        document.getElementById("profileAddress").textContent =
+          localStorage.getItem("userAddress") || "Not Set";
+
+        // Load profile picture from localStorage
+        let storedImage = localStorage.getItem("profilePic");
+        if (storedImage) {
+          document.getElementById("profilePic").src = storedImage;
+        }
+      }
+
+      // Enable editing mode
+      function enableEdit() {
+        document.getElementById("editName").style.display = "block";
+        document.getElementById("editAge").style.display = "block";
+        document.getElementById("editGender").style.display = "block";
+        document.getElementById("editAddress").style.display = "block";
+
+        document.getElementById("editName").value =
+          localStorage.getItem("userName") || "";
+        document.getElementById("editAge").value =
+          localStorage.getItem("userAge") || "";
+        document.getElementById("editGender").value =
+          localStorage.getItem("userGender") || "Male";
+        document.getElementById("editAddress").value =
+          localStorage.getItem("userAddress") || "";
+
+        document.getElementById("saveBtn").style.display = "block";
+      }
+
+      // Save updated profile info
+      function saveProfile() {
+        let newName = document.getElementById("editName").value;
+        let newAge = document.getElementById("editAge").value;
+        let newGender = document.getElementById("editGender").value;
+        let newAddress = document.getElementById("editAddress").value;
+
+        localStorage.setItem("userName", newName);
+        localStorage.setItem("userAge", newAge);
+        localStorage.setItem("userGender", newGender);
+        localStorage.setItem("userAddress", newAddress);
+
+        alert("Profile updated successfully!");
+
+        document.getElementById("editName").style.display = "none";
+        document.getElementById("editAge").style.display = "none";
+        document.getElementById("editGender").style.display = "none";
+        document.getElementById("editAddress").style.display = "none";
+        document.getElementById("saveBtn").style.display = "none";
+
+        loadProfile(); // Refresh profile data
+      }
+
+      // Handle profile picture upload
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", function (event) {
+          const file = event.target.files[0];
+
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              document.getElementById("profilePic").src = e.target.result;
+              localStorage.setItem("profilePic", e.target.result);
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+      // Logout function (clears storage and redirects to login page)
+      function logout() {
+        localStorage.clear();
+        alert("Logged out successfully!");
+        window.location.href = "login.html";
+      }
+
+      // Load profile info on page load
+      loadProfile();
+    </script>
+  </body>
+</html>

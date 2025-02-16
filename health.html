@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Health Tracking</title>
+    <style>
+      body {
+        font-family: Arial, "Arial", Arial, Arial;
+        padding: 20px;
+        text-align: center;
+      }
+      h1 {
+        color: hsl(256, 51%, 21%);
+      }
+      button {
+        background-color: hsl(256, 51%, 21%);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: hsl(256, 51%, 21%);
+      }
+      input,
+      textarea {
+        display: block;
+        margin: 10px auto;
+        padding: 8px;
+        font-size: 16px;
+      }
+      canvas {
+        width: 100%;
+        height: 300px;
+        margin-top: 20px;
+      }
+      .nav-buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .nav-buttons button {
+        background-color: hsl(256, 51%, 21%);
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 8px;
+        margin: 0 10px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>Health Tracking</h1>
+    <p>
+      Monitor vitals, set health goals, and track wellness progress over time.
+    </p>
+
+    <select id="metricSelect" onchange="displayTrendGraph()"></select>
+    <input type="date" id="metricDate" />
+    <input type="number" id="metricValue" placeholder="Enter Value" />
+    <input type="text" id="metricCategory" placeholder="Enter Category" />
+    <button onclick="addMetric()">Add Metric</button>
+    <button onclick="removeCategory()">Remove Category</button>
+
+    <canvas id="trendChart"></canvas>
+
+    <button onclick="window.location.href='index.html'">Back to Home</button>
+
+    <script>
+      let medicalMetrics =
+        JSON.parse(localStorage.getItem("medicalMetrics")) || [];
+      let categories = JSON.parse(localStorage.getItem("categories")) || [];
+      let categoryColors =
+        JSON.parse(localStorage.getItem("categoryColors")) || {};
+      let chartInstance;
+
+      function addMetric() {
+        let metricType = document.getElementById("metricSelect").value;
+        let metricDate = document.getElementById("metricDate").value;
+        let metricValue = document.getElementById("metricValue").value;
+        let category =
+          document.getElementById("metricCategory").value || metricType;
+
+        if (!metricDate || !metricValue) {
+          alert("Please enter both date and value.");
+          return;
+        }
+
+        medicalMetrics.push({
+          metricType,
+          date: metricDate,
+          value: metricValue,
+          category,
+        });
+        localStorage.setItem("medicalMetrics", JSON.stringify(medicalMetrics));
+
+        if (!categories.includes(category)) {
+          categories.push(category);
+          categoryColors[category] = getRandomColor();
+          localStorage.setItem("categories", JSON.stringify(categories));
+          localStorage.setItem(
+            "categoryColors",
+            JSON.stringify(categoryColors)
+          );
+        }
+
+        updateMetricSelect();
+        displayTrendGraph();
+      }
+
+      function removeCategory() {
+        let categoryToRemove = document.getElementById("metricCategory").value;
+
+        if (categoryToRemove && categories.includes(categoryToRemove)) {
+          categories = categories.filter(
+            (category) => category !== categoryToRemove
+          );
+          medicalMetrics = medicalMetrics.filter(
+            (metric) => metric.category !== categoryToRemove
+          );
+          localStorage.setItem(
+            "medicalMetrics",
+            JSON.stringify(medicalMetrics)
+          );
+          localStorage.setItem("categories", JSON.stringify(categories));
+          updateMetricSelect();
+          displayTrendGraph();
+        } else {
+          alert("Category not found!");
+        }
+      }
+
+      function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+
+      function updateMetricSelect() {
+        const metricSelect = document.getElementById("metricSelect");
+        metricSelect.innerHTML = "";
+
+        categories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          metricSelect.appendChild(option);
+        });
+
+        let lastSelectedCategory = localStorage.getItem("lastSelectedCategory");
+        if (lastSelectedCategory && categories.includes(lastSelectedCategory)) {
+          metricSelect.value = lastSelectedCategory;
+        } else if (categories.length > 0) {
+          metricSelect.value = categories[0];
+        }
+        displayTrendGraph();
+      }
+
+      function displayTrendGraph() {
+        const selectedCategory = document.getElementById("metricSelect").value;
+        localStorage.setItem("lastSelectedCategory", selectedCategory);
+        const ctx = document.getElementById("trendChart").getContext("2d");
+
+        let filteredMetrics = medicalMetrics.filter(
+          (metric) => metric.category === selectedCategory
+        );
+        let categoryLabels = filteredMetrics.map((metric) => metric.date);
+        let categoryData = filteredMetrics.map((metric) =>
+          parseFloat(metric.value)
+        );
+
+        let combinedData = categoryLabels.map((date, index) => ({
+          date: new Date(date),
+          value: categoryData[index],
+        }));
+        combinedData.sort((a, b) => a.date - b.date);
+
+        let chartData = {
+          labels: combinedData.map(
+            (item) => item.date.toISOString().split("T")[0]
+          ),
+          datasets: [
+            {
+              label: selectedCategory,
+              data: combinedData.map((item) => item.value),
+              borderColor: categoryColors[selectedCategory] || "#000000",
+              fill: false,
+              tension: 0.1,
+            },
+          ],
+        };
+
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+          type: "line",
+          data: chartData,
+          options: {
+            responsive: true,
+            scales: {
+              x: { title: { display: true, text: "Date" } },
+              y: { title: { display: true, text: "Value" } },
+            },
+          },
+        });
+      }
+
+      window.onload = function () {
+        updateMetricSelect();
+      };
+    </script>
+  </body>
+</html>

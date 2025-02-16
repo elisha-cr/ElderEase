@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - ElderEase</title>
+    <style>
+      body {
+        font-family: Arial, "Arial", Arial, Arial;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        padding: 20px;
+        margin: 50px auto;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      input,
+      select {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .btn {
+        background-color: #483b71;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .btn:hover {
+        background-color: hsl(256, 51%, 21%);
+      }
+
+      .link {
+        margin-top: 15px;
+        display: block;
+        color: #483b71;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Sign Up</h2>
+      <form id="signupForm">
+        <input
+          type="text"
+          id="name"
+          placeholder="Enter your name"
+          required
+        /><br />
+        <input
+          type="email"
+          id="email"
+          placeholder="Enter your email"
+          required
+        /><br />
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+          required
+        /><br />
+        <input
+          type="date"
+          id="dob"
+          placeholder="Enter your date of birth"
+          required
+        /><br />
+        <p>Your age: <span id="ageDisplay">--</span></p>
+
+        <select id="gender">
+          <option value="" disabled selected>Select your gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <select id="pronouns">
+          <option value="" disabled selected>Select your pronouns</option>
+          <option value="He/Him">He/Him</option>
+          <option value="She/Her">She/Her</option>
+          <option value="They/Them">They/Them</option>
+        </select>
+
+        <button type="button" class="btn" onclick="saveUser()">Sign Up</button>
+        <button type="button" class="btn" onclick="goToProfile()">
+          Go to Profile
+        </button>
+
+        <a href="login.html" class="link">Already have an account? Login</a>
+      </form>
+    </div>
+
+    <script>
+      function saveUser() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+        let age = document.getElementById("age").value;
+        let gender = document.getElementById("gender").value;
+        let pronouns = document.getElementById("pronouns").value;
+
+        if (!name || !email || !password || !age || !gender || !pronouns) {
+          alert("Please fill out all fields!");
+          return;
+        }
+
+        localStorage.setItem("userName", name);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userPassword", password);
+        localStorage.setItem("userAge", age);
+        localStorage.setItem("userGender", gender);
+        localStorage.setItem("userPronouns", pronouns);
+
+        alert("Sign-up successful! Redirecting to Profile...");
+        window.location.href = "profile.html";
+      }
+
+      function goToProfile() {
+        window.location.href = "profile.html";
+      }
+    </script>
+  </body>
+</html>
